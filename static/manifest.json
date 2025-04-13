@@ -1,0 +1,19 @@
+{
+  "name": "FocusLock",
+  "description": "Block non-educational websites to stay focused",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "permissions": [
+    "storage",
+    "webNavigation",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "FocusLock",
+    "default_icon": "favicon.png",
+    "default_popup": "index.html"
+  }
+}

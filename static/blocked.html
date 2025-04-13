@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Blocked - FocusLock</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --primary-color: #4f46e5;
+      --primary-hover: #4338ca;
+      --error-color: #dc2626;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --background: #f9fafb;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: var(--background);
+      background-image: 
+        radial-gradient(#e0e7ff 1px, transparent 1px),
+        radial-gradient(#e0e7ff 1px, transparent 1px);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+      color: var(--text-primary);
+    }
+    
+    .container {
+      max-width: 520px;
+      width: 90%;
+      text-align: center;
+      padding: 3rem;
+      background-color: white;
+      border-radius: 24px;
+      box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.05),
+        0 20px 48px rgba(0, 0, 0, 0.03),
+        0 1px 4px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    h1 {
+      color: var(--error-color);
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      font-size: 2rem;
+      letter-spacing: -0.025em;
+    }
+    
+    p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      max-width: 440px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.9rem 2rem;
+      border-radius: 12px;
+      text-decoration: none;
+      margin-top: 2rem;
+      font-weight: 600;
+      font-size: 1.05rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+      border: none;
+      cursor: pointer;
+      outline: none;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      background-color: var(--primary-hover);
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+    }
+    
+    .btn:active {
+      transform: translateY(-1px);
+    }
+    
+    .icon-container {
+      background-color: rgba(220, 38, 38, 0.08);
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+    
+    .icon {
+      font-size: 3.5rem;
+    }
+  </style>
+  <!-- <script>
+    function goBack() {
+      window.history.back();
+    }
+    
+    // Wait for DOM to be fully loaded before attaching event listener
+    document.addEventListener('DOMContentLoaded', function() {
+      const backButton = document.getElementById('backButton');
+      if (backButton) {
+        backButton.addEventListener('click', goBack);
+      }
+    });
+  </script> -->
+</head>
+<body>
+  <div class="container">
+    <div class="icon-container">
+      <div class="icon">🔒</div>
+    </div>
+    <h1>This site has been blocked</h1>
+    <p>You've blocked this website with <b>FocusLock</b> to help you stay focused and productive.</p>
+    <p>If you need to access this site, you can temporarily disable FocusLock from the extension popup.</p>
+  </div>
+</body>
+</html>
