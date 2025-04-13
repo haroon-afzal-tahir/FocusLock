@@ -1,38 +1,42 @@
-# sv
+# FocusLock
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+FocusLock is a browser extension designed to help you maintain focus by blocking non-educational websites. It allows you to create a list of distracting websites and prevent access to them when you need to concentrate on work or studies.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Block distracting websites with a simple toggle
+- Customize your list of blocked sites
+- Clean, minimalist interface built with Svelte
+- Focus mode to help you stay productive
 
-```bash
-# create a new project in the current directory
-npx sv create
+## Getting Started
 
-# create a new project in my-app
-npx sv create my-app
-```
+This project is built with Svelte, powered by [`sv`](https://svelte.dev/docs/kit/introduction).
 
-## Developing
+## Installing on the browser
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+1. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
 
-```bash
-npm run dev
+2. Build the extension:
+   ```bash
+   npm run build:extension
+   # or
+   yarn build:extension
+   # or
+   pnpm build:extension
+   ```
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+3. Open Chrome and navigate to `chrome://extensions/`
 
-## Building
+4. Enable "Developer mode" using the toggle in the top-right corner
 
-To create a production version of your app:
+5. Click on "Load Unpacked" and select the `build` directory from your project folder
 
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+The extension should now be installed and ready to use in your browser.
