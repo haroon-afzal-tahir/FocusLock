@@ -22,109 +22,106 @@
 		}
 	}
 
+	function checkCurrentUrlValidity(currentUrl: string): false | { hostname: string; url: string } {
+		const hostname = getHostnameFromUrl(currentUrl);
+		const urlRegex =
+			/(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?/g;
+
+		const url = currentUrl.toLowerCase().trim();
+		if (!url.match(urlRegex)) {
+			error = 'Please enter a valid website URL';
+			return false;
+		}
+
+		if (
+			$blockedSites.some((site) => {
+				const siteHost = getHostnameFromUrl(site.url);
+				return siteHost.includes(hostname) || hostname.includes(siteHost);
+			})
+		) {
+			error = 'This website is already blocked';
+			return false;
+		}
+
+		if ($blockedSites.some((site) => site.url.includes(url) || url.includes(site.url))) {
+			error = 'This website or a similar one is already blocked';
+			return false;
+		}
+
+		if (url.includes('blocked.html')) {
+			error = 'You cannot block the blocked page';
+			return false;
+		}
+
+		if (UNBLOCKABLE_SITES.includes(hostname)) {
+			error = 'You cannot block this website';
+			return false;
+		}
+
+		return { hostname, url };
+	}
+
 	// Function to add current site to blocklist
-	async function addCurrentSite() {
+	async function addSite(e?: Event, useCurrentUrl = false) {
+		if (e) e.preventDefault();
+
+		let urlToBlock;
+		let result;
+
 		try {
-			const currentUrl = await getCurrentTabUrl();
-			if (!currentUrl) return;
-
-			const hostname = getHostnameFromUrl(currentUrl);
-
-			// Check if site already exists
-			if (
-				$blockedSites.some((site) => {
-					const siteHost = getHostnameFromUrl(site.url);
-					return siteHost.includes(hostname) || hostname.includes(siteHost);
-				})
-			) {
-				error = 'This website is already blocked';
-				return;
+			if (useCurrentUrl) {
+				// Get current URL for blocking
+				urlToBlock = await getCurrentTabUrl();
+				if (!urlToBlock) return;
+			} else {
+				// Use manually entered URL
+				if (!newSiteUrl) return;
+				urlToBlock = newSiteUrl;
 			}
 
-			if (currentUrl.includes('blocked.html')) {
-				error = 'You cannot block the blocked page';
-				return;
-			}
+			result = checkCurrentUrlValidity(urlToBlock);
+			if (!result) return;
 
-			if (UNBLOCKABLE_SITES.includes(hostname)) {
-				error = 'You cannot block this website';
-				return;
-			}
-
-			// Add the current site
+			// Add the site
 			const newSite: BlockedSite = {
-				url: hostname,
+				url: result.hostname,
 				id: crypto.randomUUID()
 			};
 
 			$blockedSites = [...$blockedSites, newSite];
 			saveBlockedSites($blockedSites);
+
+			if (!useCurrentUrl) newSiteUrl = '';
 			error = ''; // Clear any existing errors
 
-			if ($isBlockingEnabled) {
-				// Redirect to blocked page
+			// Check if we need to redirect
+			if (useCurrentUrl && $isBlockingEnabled) {
+				// Redirect immediately if blocking the current site
 				redirectToBlockedPage();
+			} else if ($isBlockingEnabled) {
+				// Check if the current URL matches the newly added blocked site
+				const currentUrl = await getCurrentTabUrl();
+				if (!currentUrl) return;
+
+				const currentHostname = getHostnameFromUrl(currentUrl);
+				const newSiteHostname = getHostnameFromUrl(result.url);
+
+				// Check if current hostname contains or is contained by the blocked site hostname
+				const isCurrentSiteBlocked =
+					currentHostname.includes(newSiteHostname) || newSiteHostname.includes(currentHostname);
+
+				if (isCurrentSiteBlocked) {
+					redirectToBlockedPage();
+				}
 			}
 		} catch (e) {
-			console.error('Error adding current site:', e);
-			error = 'Failed to add current site';
+			console.error('Error adding site:', e);
+			error = 'Failed to add site';
 		}
 	}
 
-	async function addSite(e: Event) {
-		e.preventDefault();
-
-		if (!newSiteUrl) return;
-
-		const urlRegex =
-			/(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?/g;
-		const url = newSiteUrl.toLowerCase().trim();
-
-		if (!url.match(urlRegex)) {
-			error = 'Please enter a valid website URL';
-			return;
-		}
-
-		// Check if site already exists
-		if ($blockedSites.some((site) => site.url.includes(url) || url.includes(site.url))) {
-			error = 'This website or a similar one is already blocked';
-			return;
-		}
-
-		if (url.includes('blocked.html')) {
-			error = 'You cannot block the blocked page';
-			return;
-		}
-
-		// Add the new site
-		const newSite: BlockedSite = {
-			url,
-			id: crypto.randomUUID()
-		};
-
-		$blockedSites = [...$blockedSites, newSite];
-		saveBlockedSites($blockedSites);
-		newSiteUrl = '';
-		error = ''; // Clear any existing errors
-
-		// Check if the current URL matches the newly added blocked site
-		try {
-			const currentUrl = await getCurrentTabUrl();
-			if (!currentUrl) return;
-
-			const currentHostname = getHostnameFromUrl(currentUrl);
-			const newSiteHostname = getHostnameFromUrl(url);
-
-			// Check if current hostname contains or is contained by the blocked site hostname
-			const isCurrentSiteBlocked =
-				currentHostname.includes(newSiteHostname) || newSiteHostname.includes(currentHostname);
-
-			if ($isBlockingEnabled && isCurrentSiteBlocked) {
-				redirectToBlockedPage();
-			}
-		} catch (e) {
-			console.error('Error checking current URL:', e);
-		}
+	function addCurrentSite() {
+		addSite(undefined, true);
 	}
 
 	function removeSite(id: string) {
