@@ -17,27 +17,23 @@
 	/>
 </svelte:head>
 
-<div
-	class="flex min-h-screen items-center justify-center bg-[#f9fafb] bg-[radial-gradient(#e0e7ff_1px,transparent_1px),radial-gradient(#e0e7ff_1px,transparent_1px)] bg-[0_0,10px_10px] bg-[length:20px_20px]"
->
-	<div
-		class="animate-fadeIn container border border-[rgba(0,0,0,0.03)] bg-white p-10 shadow-[0_10px_25px_rgba(0,0,0,0.05),0_20px_48px_rgba(0,0,0,0.03),0_1px_4px_rgba(0,0,0,0.05)]"
-	>
-		<div class="mb-6 flex items-center justify-center">
-			<div class="flex h-20 w-20 items-center justify-center rounded-full bg-indigo-50">
-				<div class="text-4xl">🔒</div>
+<div class="main-container">
+	<div class="app-container">
+		<div class="logo-container">
+			<div class="logo-circle">
+				<div class="logo-emoji">🔒</div>
 			</div>
 		</div>
 
-		<h1 class="mb-6 text-center text-3xl font-bold text-indigo-600">FocusLock</h1>
+		<h1 class="app-title">FocusLock</h1>
 
 		<BlockingToggle />
 
-		<div class="mt-6 border-t border-indigo-100 pt-6">
+		<div class="blocked-sites-section">
 			<BlockedSitesList />
 		</div>
 
-		<p class="mt-8 text-center text-sm text-gray-500">
+		<p class="app-description">
 			FocusLock helps you stay focused by blocking distracting websites.
 		</p>
 	</div>
@@ -54,6 +50,73 @@
 		margin: 0;
 	}
 
+	.main-container {
+		display: flex;
+		min-height: 100vh;
+		align-items: center;
+		justify-content: center;
+		background-color: #f9fafb;
+		background-image:
+			radial-gradient(#e0e7ff 1px, transparent 1px), radial-gradient(#e0e7ff 1px, transparent 1px);
+		background-position:
+			0 0,
+			10px 10px;
+		background-size: 20px 20px;
+	}
+
+	.app-container {
+		animation: fadeIn 0.6s ease-out;
+		border: 1px solid rgba(0, 0, 0, 0.03);
+		background-color: white;
+		padding: 2.5rem;
+		box-shadow:
+			0 10px 25px rgba(0, 0, 0, 0.05),
+			0 20px 48px rgba(0, 0, 0, 0.03),
+			0 1px 4px rgba(0, 0, 0, 0.05);
+	}
+
+	.logo-container {
+		margin-bottom: 1.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.logo-circle {
+		display: flex;
+		height: 5rem;
+		width: 5rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 9999px;
+		background-color: #eef2ff;
+	}
+
+	.logo-emoji {
+		font-size: 2.25rem;
+	}
+
+	.app-title {
+		margin-bottom: 1.5rem;
+		text-align: center;
+		font-size: 1.875rem;
+		font-weight: 700;
+		color: #4f46e5;
+	}
+
+	.blocked-sites-section {
+		margin-top: 1.5rem;
+		border-top: 1px solid #eef2ff;
+		padding-top: 1.5rem;
+	}
+
+	.app-description {
+		margin-top: 2rem;
+		text-align: center;
+		font-size: 0.875rem;
+		color: #6b7280;
+	}
+
 	@keyframes fadeIn {
 		from {
 			opacity: 0;
@@ -63,9 +126,5 @@
 			opacity: 1;
 			transform: translateY(0);
 		}
-	}
-
-	.animate-fadeIn {
-		animation: fadeIn 0.6s ease-out;
 	}
 </style>

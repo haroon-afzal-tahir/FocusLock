@@ -53,3 +53,34 @@ export async function saveBlockingStatus(enabled: boolean) {
 		console.error('Error saving blocking status:', error);
 	}
 }
+
+export async function redirectToBlockedPage() {
+	// This moves the extension route to the blocked page
+	// But I want the current tab to be redirected to the blocked page
+	// So I need to get the current tab id and then redirect the current tab to the blocked page
+	const tab = await getCurrentTab();
+	if (tab?.id) {
+		if (tab.url) {
+			// check if the current tab url is already the blocked page
+			if (tab.url.includes('blocked.html')) {
+				return;
+			}
+		}
+		chrome.tabs.update(tab.id, { url: chrome.runtime.getURL('blocked.html') });
+	}
+}
+
+async function getCurrentTab() {
+	const queryOptions = { active: true, lastFocusedWindow: true };
+	// `tab` will either be a `tabs.Tab` instance or `undefined`.
+	const [tab] = await chrome.tabs.query(queryOptions);
+	return tab;
+}
+
+export async function getCurrentTabUrl() {
+	const tab = await getCurrentTab();
+	if (tab?.url) {
+		return tab.url;
+	}
+	return null;
+}

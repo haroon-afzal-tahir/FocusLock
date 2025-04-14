@@ -71,3 +71,18 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 		}
 	}
 });
+
+// Listen for tab activation
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
+	// Get the active tab information
+	const tab = await chrome.tabs.get(activeInfo.tabId);
+
+	// Check if we should block this URL
+	if (tab.url) {
+		const { isBlockingEnabled, blockedSites } = await getStoredData();
+
+		if (isBlockingEnabled && shouldBlockUrl(tab.url, blockedSites)) {
+			redirectToBlockPage(activeInfo.tabId);
+		}
+	}
+});
